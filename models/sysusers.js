@@ -23,7 +23,7 @@ module.exports = {
     },
     searchAllUsers: function searchAllUsers() {
         
-        return Address
+        return SysUser
             .find();
     }
 
