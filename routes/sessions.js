@@ -10,30 +10,34 @@ router.get('/', function (req, res, next) {
 
 // POST /create 用户登录
 router.post('/create', function (req, res, next) {
-    var email = req.fields.email;
-    var password = req.fields.password;
-
+    var email = req.body.email;
+    var password = req.body.password;
     UserModel.getUserByEmail(email)
         .then(function (user) {
             if (!user) {
                 //req.flash('error', '用户不存在');
-                return res.json({ message: 'User not find' });
+                return res.json({ code: 10003, message: 'User not find' });
             }
             // 检查密码是否匹配
             if (sha1(password) !== user.password) {
                 //req.flash('error', '用户名或密码错误');
-                return res.json({ message: 'Password is not correct' });
+                return res.json({ code: 10007, message: 'Password is not correct' });
             }
-            var expires = moment().add('minutes', 10).valueOf();
-            var token = jwt.encode({
-              iss: user.id,
-              exp: expires
-            }, app.get('jwtTokenSecret'));
-            //req.flash('success', '登录成功');
-            // 用户信息写入 session
-            return res.json({ token : token,message: 'Login successfully' });
+            return res.json({ code: 0, message: 'Login successfully', userid: user._id });
         })
         .catch(next);
 });
 
+router.post('/wechat/create', function (req, res, next) {
+    var accesstoken = req.body.accesstoken;
+    UserModel.getUserByAccesstoken(accesstoken)
+        .then(function (user) {
+            if (!user) {
+                //req.flash('error', '用户不存在');
+                return res.json({ code: 10003, message: 'User not find' });
+            }
+            return res.json({ code: 0, message: 'Login successfully', userid: user._id  });
+        })
+        .catch(next);
+});
 module.exports = router;

@@ -20,6 +20,20 @@ module.exports = {
       .findOne({ _id: id })
       .addCreatedAt()
       .exec();
+  },
+  getUserByAccesstoken: function getUserByAccesstoken(accesstoken) {
+    var orQuery1 = {};
+    if (accesstoken) {
+      orQuery1.accesstoken = accesstoken;
+    }
+    return User
+      .findOne(orQuery1)
+      .addCreatedAt()
+      .exec();
+  },
+  //修改
+  updateUserById: function updateUserById(id, data) {
+      return User.update({ _id: id }, { $set: data }).exec();
   }
 
 };
