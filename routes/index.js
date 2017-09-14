@@ -9,7 +9,7 @@ module.exports = function (app) {
     // 404 page
     app.use(function (req, res) {
       if (!res.headersSent) {
-        res.status(404).render('404');
+        res.status(404).json({ message: 'not find' });
       }
     });
   };
