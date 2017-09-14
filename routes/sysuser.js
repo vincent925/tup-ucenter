@@ -8,6 +8,15 @@ var checkLogin = require('../middlewares/check').checkLogin;
 router.get('/', function (req, res, next) {
     res.render('signup');
 });
+router.get('/getall', function (req, res, next) {
+    SysUserModel.searchAllUsers()
+    .then(function (result) {
+        return res.json({ code: 0,users: result });
+    })
+    .catch(function (e) {
+        console.log(e);
+    });
+});
 function randomWord(randomFlag, min, max) {
     var str = "",
         range = min,
