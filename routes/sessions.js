@@ -29,8 +29,8 @@ router.post('/create', function (req, res, next) {
 });
 
 router.post('/wechat/create', function (req, res, next) {
-    var accesstoken = req.body.accesstoken;
-    UserModel.getUserByAccesstoken(accesstoken)
+    var openid = req.body.openid;
+    UserModel.getUserByOpenid(openid)
         .then(function (user) {
             if (!user) {
                 //req.flash('error', '用户不存在');

@@ -21,10 +21,10 @@ module.exports = {
       .addCreatedAt()
       .exec();
   },
-  getUserByAccesstoken: function getUserByAccesstoken(accesstoken) {
+  getUserByOpenid: function getUserByOpenid(openid) {
     var orQuery1 = {};
-    if (accesstoken) {
-      orQuery1.accesstoken = accesstoken;
+    if (openid) {
+      orQuery1.openid = openid;
     }
     return User
       .findOne(orQuery1)

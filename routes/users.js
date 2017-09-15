@@ -12,7 +12,6 @@ router.post('/create', checkLogin, function (req, res, next) {
     var avatar = req.body.avatar;
     var gender = req.body.gender;
     var type = req.body.type;
-    var accesstoken = req.body.accesstoken;
     var openid = req.body.openid;
     var site = req.body.site;
     var ip = req.body.ip;
@@ -55,9 +54,6 @@ router.post('/create', checkLogin, function (req, res, next) {
     if (type != undefined) {
         u.type = type;
     }
-    if (accesstoken != undefined) {
-        u.accesstoken = accesstoken;
-    }
     if (openid != undefined) {
         u.openid = openid;
     }
@@ -89,7 +85,7 @@ router.post('/create', checkLogin, function (req, res, next) {
             });
     }
     else {
-        UserModel.getUserByAccesstoken(accesstoken)
+        UserModel.getUserByOpenid(openid)
             .then(function (u1) {
                 if (u1 != null) {
                     return res.json({ code: 10008, message: 'User already exists' });
@@ -118,7 +114,6 @@ router.post('/update', checkLogin, function (req, res, next) {
     var avatar = req.body.avatar;
     var gender = req.body.gender;
     var type = req.body.type;
-    var accesstoken = req.body.accesstoken;
     var openid = req.body.openid;
     var site = req.body.site;
     var ip = req.body.ip;
@@ -160,9 +155,6 @@ router.post('/update', checkLogin, function (req, res, next) {
             }
             if (type != undefined) {
                 u.type = type;
-            }
-            if (accesstoken != undefined) {
-                u.accesstoken = accesstoken;
             }
             if (openid != undefined) {
                 u.openid = openid;
