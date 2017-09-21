@@ -9,19 +9,19 @@ router.get('/ByBook', function (req, res, next) {
     var bookId = req.query.bookId;
     LicenseModel.getAllLicenseBybookId(bookId)
         .then(function (result) {
-            return res.json({ code: 0, licenses: result });
+            return res.json({ code: 0, message: 'Successfully',licenses: result });
         })
         .catch(function (e) {
             return res.status(401).json({ code: 10000, message: e.message });
         });
 });
 
-// GET /signin 根据批次获取序列号
-router.get('/ByBatch', function (req, res, next) {
+// GET /bybatch 根据批次获取序列号
+router.get('/bybatch', function (req, res, next) {
     var batchId = req.query.batchId;
     LicenseModel.getAllLicenseBybatchId(batchId)
         .then(function (result) {
-            return res.json({ code: 0, licenses: result });
+            return res.json({ code: 0, message: 'Successfully',licenses: result });
         })
         .catch(function (e) {
             return res.status(401).json({ code: 10000, message: e.message });
@@ -79,10 +79,10 @@ router.post('/activate', function (req, res, next) {
             if(result==null){
                 return res.json({ code: 10010, message: 'Invalid license' });
             }
-            if(result.state=='Activated'){
+            if(result.state=='activated'){
                 return res.json({ code: 10009, message: 'License already activated' });
             }
-            result.state = 'Activated';
+            result.state = 'activated';
             result.ActivateUserID = userKey;
             result.ActivateDateTime=Date.now();
             LicenseModel.updateLicenseById(result)
