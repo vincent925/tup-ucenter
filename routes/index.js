@@ -6,6 +6,9 @@ module.exports = function (app) {
     app.use('/sessions', require('./sessions'));
     app.use('/token', require('./token'));
     app.use('/sysuser', require('./sysuser'));
+    app.use('/book', require('./book'));
+    app.use('/license', require('./license'));
+    app.use('/batch', require('./batch'));
     // 404 page
     app.use(function (req, res) {
       if (!res.headersSent) {
