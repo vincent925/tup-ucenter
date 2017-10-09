@@ -28,12 +28,19 @@ module.exports = {
   },
   //修改序列号
   updateLicenseById: function updateLicenseById(id, data) {
-      return License.update({ _id: id }, { $set: data }).exec();
+    return License.update({ _id: id }, { $set: data }).exec();
   },
   //根据License获取一序列号
   getLicenseByLicense: function getLicenseByLicense(license) {
     return License
       .findOne({ code: license })
+      .addCreatedAt()
+      .exec();
+  },
+  //根据图书和人获取所有序列号
+  getLicenseBybookIdAndActivateUserID: function getLicenseBybookIdAndActivateUserID(bookId, userid) {
+    return License
+      .find({ bookId: bookId, ActivateUserID: userid })
       .addCreatedAt()
       .exec();
   }

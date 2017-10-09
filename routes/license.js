@@ -4,8 +4,8 @@ var BookModel = require('../models/book');
 var LicenseModel = require('../models/license');
 var BatchModel = require('../models/batch');
 var UUID = require('uuid');
-// GET /signin 根据图书获取序列号
-router.get('/ByBook', function (req, res, next) {
+// GET /bybook 根据图书获取序列号
+router.get('/bybook', function (req, res, next) {
     var bookId = req.query.bookId;
     LicenseModel.getAllLicenseBybookId(bookId)
         .then(function (result) {
@@ -27,16 +27,28 @@ router.get('/bybatch', function (req, res, next) {
             return res.status(401).json({ code: 10000, message: e.message });
         });
 });
+// GET /bybatch 根据书和人获取序列号
+router.get('/bybookanduser', function (req, res, next) {
+    var bookId = req.query.bookId;
+    var userId = req.query.userId;
+    LicenseModel.getLicenseBybookIdAndActivateUserID(bookId,userId)
+        .then(function (result) {
+            return res.json({ code: 0, message: 'Successfully',licenses: result });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+});
 // POST /create 批量生成序列号
 router.post('/create', function (req, res, next) {
     var bookId = req.body.bookId;
     var count = req.body.count;
     var validitySecond = req.body.validitySecond;
-    var userKey = req.body.userKey;
+    var userkey = req.body.userkey;
     var batch = {
         bookId: bookId,
         count: parseInt(count),
-        createUser: userKey
+        createUser: userkey
     };
     BatchModel.create(batch)
         .then(function (result) {
@@ -53,7 +65,7 @@ router.post('/create', function (req, res, next) {
                     //ActivateDateTime: null,
                     //ActivateUserID: null,
                     ValiditySecond: parseInt(validitySecond),
-                    createUser: userKey
+                    createUser: userkey
                 };
                 licenses[i] = l;
             }
@@ -73,7 +85,7 @@ router.post('/create', function (req, res, next) {
 // POST /activate 激活序列号
 router.post('/activate', function (req, res, next) {
     var license = req.body.license;
-    var userKey = req.body.userKey;
+    var userkey = req.body.userkey;
     LicenseModel.getLicenseByLicense(license)
         .then(function (result) {
             if(result==null){
@@ -83,7 +95,7 @@ router.post('/activate', function (req, res, next) {
                 return res.json({ code: 10009, message: 'License already activated' });
             }
             result.state = 'activated';
-            result.ActivateUserID = userKey;
+            result.ActivateUserID = userkey;
             result.ActivateDateTime=Date.now();
             LicenseModel.updateLicenseById(result)
                 .then(function (r) {
