@@ -17,7 +17,7 @@ router.get('/all', function (req, res, next) {
 
 // POST /create 批量导入图书数据
 router.get('/create', function (req, res, next) {
-    var obj = xlsx.parse('./book2.xlsx');
+    var obj = xlsx.parse('./book.xlsx');
     obj[0].data.forEach(function (element) {
         var book = {};
         if(element[2]!=undefined){
