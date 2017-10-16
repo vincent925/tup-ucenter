@@ -3,6 +3,8 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jwt-simple');
 var UserModel = require('../models/users');
+var checkLogin = require('../middlewares/check').checkLogin;
+
 // GET /signin 登录页
 router.get('/', function (req, res, next) {
     return res.json({ message: 'not find' });

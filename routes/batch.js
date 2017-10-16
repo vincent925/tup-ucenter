@@ -3,6 +3,7 @@ var router = express.Router();
 var BookModel = require('../models/book');
 var LicenseModel = require('../models/license');
 var BatchModel = require('../models/batch');
+var checkLogin = require('../middlewares/check').checkLogin;
 
 // GET /byuser 获取我所有的批次
 router.get('/byuser',checkLogin, function (req, res, next) {

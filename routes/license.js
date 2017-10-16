@@ -4,6 +4,8 @@ var BookModel = require('../models/book');
 var LicenseModel = require('../models/license');
 var BatchModel = require('../models/batch');
 var UUID = require('uuid');
+var checkLogin = require('../middlewares/check').checkLogin;
+
 // GET /bybook 根据图书获取序列号
 router.get('/bybook', checkLogin,function (req, res, next) {
     var bookId = req.query.bookId;
