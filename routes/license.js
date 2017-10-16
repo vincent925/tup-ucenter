@@ -5,7 +5,7 @@ var LicenseModel = require('../models/license');
 var BatchModel = require('../models/batch');
 var UUID = require('uuid');
 // GET /bybook 根据图书获取序列号
-router.get('/bybook', function (req, res, next) {
+router.get('/bybook', checkLogin,function (req, res, next) {
     var bookId = req.query.bookId;
     LicenseModel.getAllLicenseBybookId(bookId)
         .then(function (result) {
@@ -17,7 +17,7 @@ router.get('/bybook', function (req, res, next) {
 });
 
 // GET /bybatch 根据批次获取序列号
-router.get('/bybatch', function (req, res, next) {
+router.get('/bybatch',checkLogin, function (req, res, next) {
     var batchId = req.query.batchId;
     LicenseModel.getAllLicenseBybatchId(batchId)
         .then(function (result) {
@@ -28,7 +28,7 @@ router.get('/bybatch', function (req, res, next) {
         });
 });
 // GET /bybatch 根据书和人获取序列号
-router.get('/bybookanduser', function (req, res, next) {
+router.get('/bybookanduser',checkLogin, function (req, res, next) {
     var bookId = req.query.bookId;
     var userId = req.query.userId;
     LicenseModel.getLicenseBybookIdAndActivateUserID(bookId,userId)
@@ -40,7 +40,7 @@ router.get('/bybookanduser', function (req, res, next) {
         });
 });
 // POST /create 批量生成序列号
-router.post('/create', function (req, res, next) {
+router.post('/create',checkLogin, function (req, res, next) {
     var bookId = req.body.bookId;
     var count = req.body.count;
     var validitySecond = req.body.validitySecond;
@@ -83,7 +83,7 @@ router.post('/create', function (req, res, next) {
 });
 
 // POST /activate 激活序列号
-router.post('/activate', function (req, res, next) {
+router.post('/activate',checkLogin, function (req, res, next) {
     var license = req.body.license;
     var userkey = req.body.userkey;
     LicenseModel.getLicenseByLicense(license)
@@ -111,7 +111,7 @@ router.post('/activate', function (req, res, next) {
 });
 
 // POST /check 检查序列号
-router.get('/check', function (req, res, next) {
+router.get('/check',checkLogin, function (req, res, next) {
     var license = req.query.license;
     LicenseModel.getLicenseByLicense(license)
         .then(function (result) {
