@@ -14,22 +14,22 @@ router.get('/', function (req, res, next) {
     return res.json({ code: 0,message: decoded });
 });
 router.get('/getsign', function (req, res, next) {
-    var userkey = req.query.userkey;
-    SysUserModel.getUserById(userkey)
+    var userId = req.query.userId;
+    SysUserModel.getUserById(userId)
         .then(function (user) {
             if (!user) {
                 return res.json({ code: 10003,message: 'User not find' });
             }
             var timestamp = Math.round(new Date().getTime() / 1000);
             var encodeString = base64.encode(user.secret + timestamp);
-            return res.json({ code: 0,message: 'Successfully', timestamp: timestamp, secret: user.secret, userkey: userkey, sign: encodeString });
+            return res.json({ code: 0,message: 'Successfully', timestamp: timestamp, secret: user.secret, userId: userId, sign: encodeString });
         })
         .catch(next);
 
 });
 // POST /create 创建token
 router.get('/create', function (req, res, next) {
-    var userkey = req.query.userkey;
+    var userId = req.query.userId;
     var sign = req.query.sign;
     //签名解码
     var decodeString;
@@ -47,7 +47,7 @@ router.get('/create', function (req, res, next) {
     if (date > 60000) {
         return res.json({ code: 10005,message: 'Timestamp error' });
     }
-    SysUserModel.getUserById(userkey)
+    SysUserModel.getUserById(userId)
         .then(function (user) {
             if (!user) {
                 return res.json({ code: 10003,message: 'User not find' });
@@ -57,7 +57,7 @@ router.get('/create', function (req, res, next) {
             }
             var expires = moment().add('minutes', 1).valueOf();
             var token = jwt.encode({
-                iss: userkey,
+                iss: userId,
                 exp: expires
             }, config.jwtTokenSecret);
             return res.json({ code: 0, message: 'Successfully',token: token });

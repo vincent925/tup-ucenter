@@ -73,7 +73,7 @@ router.post('/create', checkLogin, function (req, res, next) {
                     UserModel.create(u)
                         .then(function (result) {
                             user = result.ops[0];
-                            return res.json({ code: 0, message: 'Successfully', userkey: user._id });
+                            return res.json({ code: 0, message: 'Successfully', userId: user._id });
                         })
                         .catch(function (e) {
                             return res.status(401).json({ code: 10000, message: e.message });
@@ -94,7 +94,7 @@ router.post('/create', checkLogin, function (req, res, next) {
                     UserModel.create(u)
                         .then(function (result) {
                             user = result.ops[0];
-                            return res.json({ code: 0, message: 'Successfully', userkey: user._id });
+                            return res.json({ code: 0, message: 'Successfully', userId: user._id });
                         })
                         .catch(function (e) {
                             return res.status(401).json({ code: 10000, message: e.message });
@@ -167,7 +167,7 @@ router.post('/update', checkLogin, function (req, res, next) {
             }
             UserModel.updateUserById(id, u)
                 .then(function (result) {
-                    return res.json({ code: 0, message: 'Successfully', userkey: id });
+                    return res.json({ code: 0, message: 'Successfully', userId: id });
                 })
                 .catch(function (e) {
                     return res.status(401).json({ code: 10000, message: e.message });

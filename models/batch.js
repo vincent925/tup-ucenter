@@ -13,9 +13,9 @@ module.exports = {
       .exec();
   },
   //根据用户获取所有批次号
-  getAllBatchByUserKey: function getAllBatchByUserKey(userKey) {
+  getAllBatchByuserId: function getAllBatchByuserId(userId) {
     return Batch
-      .find({ createUser: userKey })
+      .find({ createUser: userId })
       .addCreatedAt()
       .exec();
   },

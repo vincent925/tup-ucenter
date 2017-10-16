@@ -46,11 +46,11 @@ router.post('/create',checkLogin, function (req, res, next) {
     var bookId = req.body.bookId;
     var count = req.body.count;
     var validitySecond = req.body.validitySecond;
-    var userkey = req.body.userkey;
+    var userId = req.body.userId;
     var batch = {
         bookId: bookId,
         count: parseInt(count),
-        createUser: userkey
+        createUser: userId
     };
     BatchModel.create(batch)
         .then(function (result) {
@@ -67,7 +67,7 @@ router.post('/create',checkLogin, function (req, res, next) {
                     //ActivateDateTime: null,
                     //ActivateUserID: null,
                     ValiditySecond: parseInt(validitySecond),
-                    createUser: userkey
+                    createUser: userId
                 };
                 licenses[i] = l;
             }
@@ -87,7 +87,7 @@ router.post('/create',checkLogin, function (req, res, next) {
 // POST /activate 激活序列号
 router.post('/activate',checkLogin, function (req, res, next) {
     var license = req.body.license;
-    var userkey = req.body.userkey;
+    var userId = req.body.userId;
     LicenseModel.getLicenseByLicense(license)
         .then(function (result) {
             if(result==null){
@@ -97,7 +97,7 @@ router.post('/activate',checkLogin, function (req, res, next) {
                 return res.json({ code: 10009, message: 'License already activated' });
             }
             result.state = 'activated';
-            result.ActivateUserID = userkey;
+            result.ActivateUserID = userId;
             result.ActivateDateTime=Date.now();
             LicenseModel.updateLicenseById(result)
                 .then(function (r) {

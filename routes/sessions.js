@@ -25,7 +25,7 @@ router.post('/create', checkLogin,function (req, res, next) {
                 //req.flash('error', '用户名或密码错误');
                 return res.json({ code: 10007, message: 'Password is not correct' });
             }
-            return res.json({ code: 0, message: 'Login successfully', userkey: user._id });
+            return res.json({ code: 0, message: 'Login successfully', userId: user._id });
         })
         .catch(next);
 });
@@ -38,7 +38,7 @@ router.post('/wechat/create',checkLogin, function (req, res, next) {
                 //req.flash('error', '用户不存在');
                 return res.json({ code: 10003, message: 'User not find' });
             }
-            return res.json({ code: 0, message: 'Login successfully', userkey: user._id  });
+            return res.json({ code: 0, message: 'Login successfully', userId: user._id  });
         })
         .catch(next);
 });
