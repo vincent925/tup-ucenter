@@ -6,11 +6,21 @@ module.exports = {
     return Book.create(book).exec();
   },
   //获取所有图书
-  getAllBook: function getAllBook() {
+  getAllBook: function getAllBook(page, count) {
+    // return Book
+    //   .find()
+    //   .addCreatedAt()
+    //   .exec();
+
     return Book
-      .find()
+      .find().skip((page - 1) * count).limit(count)
       .addCreatedAt()
       .exec();
+  },
+  //获取所有图书数量
+  getAllBookCount: function getAllBookCount() {
+    return Book
+      .count();
   },
   //根据ID获取一本图书
   getBookById: function getBookById(id) {
@@ -21,7 +31,7 @@ module.exports = {
   },
   //修改
   updateBookById: function updateBookById(id, data) {
-      return Book.update({ _id: id }, { $set: data }).exec();
+    return Book.update({ _id: id }, { $set: data }).exec();
   }
 
 };

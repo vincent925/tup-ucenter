@@ -9,7 +9,7 @@ router.get('/', function (req, res, next) {
 });
 
 // POST /create 用户登录
-router.post('/create', function (req, res, next) {
+router.post('/create', checkLogin,function (req, res, next) {
     var email = req.body.email;
     var password = req.body.password;
     UserModel.getUserByEmail(email)
@@ -28,7 +28,7 @@ router.post('/create', function (req, res, next) {
         .catch(next);
 });
 
-router.post('/wechat/create', function (req, res, next) {
+router.post('/wechat/create',checkLogin, function (req, res, next) {
     var openid = req.body.openid;
     UserModel.getUserByOpenid(openid)
         .then(function (user) {
