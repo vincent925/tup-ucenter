@@ -3,6 +3,9 @@ var express = require('express');
 var router = express.Router();
 var UserModel = require('../models/users');
 var checkLogin = require('../middlewares/check').checkLogin;
+var crypto = require('crypto');
+var config = require('config-lite')(__dirname);
+var moment = require('moment');
 
 // POST /signin 用户注册
 router.post('/create', checkLogin, function (req, res, next) {
@@ -63,7 +66,7 @@ router.post('/create', checkLogin, function (req, res, next) {
     if (ip != undefined) {
         u.ip = ip;
     }
-    if (name != undefined) {
+    if (email != undefined) {
         UserModel.getUserByEmail(u.email)
             .then(function (u1) {
                 if (u1 != null) {
@@ -189,4 +192,103 @@ router.get('/', checkLogin, function (req, res, next) {
             return res.status(401).json({ code: 10000, message: e.message });
         });
 });
+
+//找回密码第一步
+router.get('/findpwd', checkLogin, function (req, res, next) {
+    var userId = req.query.userId;
+    var timestamp = Math.round(new Date().getTime() / 1000);
+    var str = timestamp + '|' + userId;
+    ctpwd = encrypt(str);
+    var url = 'ucenter.izhixue.cn:666/users/findPassword?userId=' + userId + '&ctpwd' + ctpwd;
+    //发送邮件
+});
+
+//找回密码
+router.get('/findPassword', checkLogin, function (req, res, next) {
+    var userId = req.query.userId;
+    var ctpwd = req.query.ctpwd;
+    ctpwd = decrypt(ctpwd);
+    var strs = new Array(); //定义一数组 
+    strs = ctpwd.split("|");
+    //检验签名和时间戳
+    if (strs[1] == userId) {
+        timestamp = strs[0];
+        var unixTimestamp = new Date(timestamp * 1000);
+        var endtime = new Date();
+        var date = endtime.getTime() - unixTimestamp.getTime();
+        if (date > 7200000) {
+            // 跳转到签名验证失败页面
+            return res.redirect('/signup');
+        }
+        UserModel.getUserById(userId)
+            .then(function (user) {
+                if (user != null) {
+                    res.render('findPassword');
+                }
+            })
+            .catch(function (e) {
+                return res.status(401).json({ code: 10000, message: e.message });
+            });
+    }
+    else {
+        // 跳转到签名验证失败页面
+        return res.redirect('/signup');
+    }
+
+});
+// POST /findPassword 找回密码
+router.post('/findPassword', function (req, res, next) {
+    var email = req.body.email;
+    var password = req.body.password;
+    var repassword = req.body.repassword;
+    // 校验参数
+    try {
+        if (password.length < 6) {
+            throw new Error('密码至少 6 个字符');
+        }
+        if (password !== repassword) {
+            throw new Error('两次输入密码不一致');
+        }
+    } catch (e) {
+        return res.redirect('back');
+    }
+    // 明文密码加密
+    password = sha1(password);
+    UserModel.getUserByEmail(email)
+        .then(function (result) {
+            if (result != null) {
+                result.password = password;
+                UserModel.updateUserById(result._id, result)
+                    .then(function (result) {
+                        user = result.ops[0];
+                        // 跳转到修改密码成功页
+                        return res.redirect('/signup');
+                    })
+                    .catch(function (e) {
+                        console.log(e);
+                    });
+            }
+            else {
+                // 跳转到修改密码失败页
+                return res.redirect('/signup');
+            }
+        })
+        .catch(function (e) {
+            console.log(e);
+        });
+});
 module.exports = router;
+
+function decrypt(str) {
+    var decipher = crypto.createDecipher('aes192', config.session.secret);
+    var dec = decipher.update(str, 'hex', 'utf8');//编码方式从hex转为utf-8;
+    dec += decipher.final('utf8');//编码方式从utf-8;
+    return dec;
+}
+
+function encrypt(str) {
+    var cipher = crypto.createCipher('aes192', config.session.secret);
+    var enc = cipher.update(str, 'utf8', 'hex');//编码方式从utf-8转为hex;
+    enc += cipher.final('hex');//编码方式从转为hex;
+    return enc;
+}

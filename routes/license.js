@@ -99,7 +99,7 @@ router.post('/activate',checkLogin, function (req, res, next) {
             result.state = 'activated';
             result.ActivateUserID = userId;
             result.ActivateDateTime=Date.now();
-            LicenseModel.updateLicenseById(result)
+            LicenseModel.updateLicenseById(result._id,result)
                 .then(function (r) {
                     return res.json({ code: 0, message: 'Activated Successfully', licenseId: result._id.toString() });
                 })
