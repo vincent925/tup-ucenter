@@ -61,7 +61,7 @@ router.post('/create',checkLogin, function (req, res, next) {
                 var l = {
                     bookId: bookId,
                     batchId: b._id.toString(),
-                    code: UUID.v1(),
+                    //code: UUID.v1(),
                     state: 'notActive',
                     CreateDateTime: Date.now(),
                     //ActivateDateTime: null,
@@ -88,7 +88,7 @@ router.post('/create',checkLogin, function (req, res, next) {
 router.post('/activate',checkLogin, function (req, res, next) {
     var license = req.body.license;
     var userId = req.body.userId;
-    LicenseModel.getLicenseByLicense(license)
+    LicenseModel.getLicenseById(license)
         .then(function (result) {
             if(result==null){
                 return res.json({ code: 10010, message: 'Invalid license' });
@@ -115,7 +115,7 @@ router.post('/activate',checkLogin, function (req, res, next) {
 // POST /check 检查序列号
 router.get('/check',checkLogin, function (req, res, next) {
     var license = req.query.license;
-    LicenseModel.getLicenseByLicense(license)
+    LicenseModel.getLicenseById(license)
         .then(function (result) {
             if(result==null){
                 return res.json({ code: 10010, message: 'Invalid license' });
