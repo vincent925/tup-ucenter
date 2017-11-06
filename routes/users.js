@@ -120,24 +120,24 @@ router.post('/update', checkLogin, function (req, res, next) {
     var openid = req.body.openid;
     var site = req.body.site;
     var ip = req.body.ip;
-    if (password != undefined) {
-        if (password.length < 6) {
-            return res.status(400).send({
-                code: 10001,
-                message: '密码至少 6 个字符'
-            });
-        }
-        password = sha1(password);
-    }
+    // if (password != undefined) {
+    //     if (password.length < 6) {
+    //         return res.status(400).send({
+    //             code: 10001,
+    //             message: '密码至少 6 个字符'
+    //         });
+    //     }
+    //     password = sha1(password);
+    // }
 
-    if (email != undefined) {
-        if (email.length < 6) {
-            return res.status(400).send({
-                code: 10002,
-                message: 'email至少 6 个字符'
-            });
-        }
-    }
+    // if (email != undefined) {
+    //     if (email.length < 6) {
+    //         return res.status(400).send({
+    //             code: 10002,
+    //             message: 'email至少 6 个字符'
+    //         });
+    //     }
+    // }
 
     UserModel.getUserById(id)
         .then(function (u) {
