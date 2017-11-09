@@ -11,3 +11,9 @@
 <code key="10009" value="序列号已激活"/>
 <code key="10010" value="序列号不存在"/>
 <code key="10001" value="系统错误"/>
+
+<code key="11001" value="名称至少 6 个字符"/>
+<code key="11002" value="结构不能为空"/>
+<code key="11003" value="结构编号不能为空"/>
+<code key="11004" value="表内容不能为空"/>
+<code key="11005" value="id不能为空"/>
