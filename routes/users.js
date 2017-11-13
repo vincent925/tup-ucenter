@@ -25,7 +25,7 @@ router.post('/create', checkLogin, function (req, res, next) {
     //             message: '密码至少 6 个字符'
     //         });
     //     }
-    //     password = sha1(password);
+         password = sha1(password);
     // }
 
     // if (email != undefined) {
