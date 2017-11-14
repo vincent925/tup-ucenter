@@ -5,7 +5,7 @@ var checkLogin = require('../middlewares/check').checkLogin;
 
 router.post('/structure/create', function (req, res, next) {
     var name = req.body.name;
-    var structure = req.body.structure;
+    var structure = JSON.parse(req.body.structure);
     var author = req.body.author;
     // 校验参数
     if (!(name.length >= 1 && name.length <= 16)) {
@@ -31,7 +31,7 @@ router.post('/structure/create', function (req, res, next) {
 router.post('/structure/update', function (req, res, next) {
     var name = req.body.name;
     var id = req.body.id;
-    var structure = req.body.structure;
+    var structure = JSON.parse(req.body.structure);
     // 校验参数
     if (id == undefined) {
         return res.status(400).send({ code: 11005, message: 'id不能为空' });
@@ -86,7 +86,7 @@ router.get('/structure/getall', function (req, res, next) {
 
 router.post('/content/create', function (req, res, next) {
     var structureId = req.body.structureId;
-    var content = req.body.content;
+    var content = JSON.parse(req.body.content);
     var author = req.body.author;
     // 校验参数
     if (structureId == undefined) {
@@ -111,7 +111,7 @@ router.post('/content/create', function (req, res, next) {
 
 router.post('/content/update', function (req, res, next) {
     var id = req.body.id;
-    var content = req.body.content;
+    var content = JSON.parse(req.body.content);
     var author = req.body.author;
     // 校验参数
     if (id == undefined) {
