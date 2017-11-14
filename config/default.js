@@ -1,5 +1,5 @@
 module.exports = {
-    port: 80,
+    port: 666,
     session: {
       secret: 'tup-ucenter',
       key: 'tup-ucenter',
