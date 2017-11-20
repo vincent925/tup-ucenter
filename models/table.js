@@ -28,7 +28,9 @@ module.exports = {
             .addCreatedAt()
             .exec();
     },
-
+    delTableStructureById: function delTableStructureById(id) {
+        return TS.remove({_id: id }).exec();
+    },
 
 
     tcCreate: function tcCreate(tc) {
@@ -71,4 +73,7 @@ module.exports = {
     tcvCreate: function tcvCreate(tcv) {
         return TCV.create(tcv).exec();
     },
+    delTableContentById: function delTableContentById(id) {
+        return TC.remove({_id: id }).exec();
+    }
 };

@@ -48,7 +48,7 @@ router.post('/structure/update', function (req, res, next) {
             if (structure != undefined) {
                 ts.structure = structure;
             }
-            ts.author=ts.author._id.toString();
+            ts.author = ts.author._id.toString();
             TableModel.updateTableStructureById(id, ts)
                 .then(function (result) {
                     return res.json({ code: 0, message: 'Successfully', tsId: id });
@@ -83,6 +83,16 @@ router.get('/structure/getall', function (req, res, next) {
 
 });
 
+router.get('/structure/remove', function (req, res, next) {
+    var id = req.query.id;
+    TableModel.delTableStructureById(id)
+        .then(function () {
+            return res.json({ code: 0, message: 'successfully' });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+});
 
 router.post('/content/create', function (req, res, next) {
     var structureId = req.body.structureId;
@@ -132,7 +142,7 @@ router.post('/content/update', function (req, res, next) {
             if (content != undefined) {
                 tc.content = content;
             }
-            tc.author=tc.author._id.toString();
+            tc.author = tc.author._id.toString();
             TableModel.updateTableContentById(id, tc)
                 .then(function (result) {
                     return res.json({ code: 0, message: 'Successfully', tcId: id });
@@ -166,6 +176,30 @@ router.get('/content/bystructure', function (req, res, next) {
             return res.status(401).json({ code: 10000, message: e.message });
         });
 
+});
+
+router.get('/content/remove', function (req, res, next) {
+    var id = req.query.id;
+    var tcv = {};
+    var author = req.query.author;
+    TableModel.getTableContentById(id)
+        .then(function (tc) {
+            tcv.content = tc.content;
+            tcv.content_id = tc._id.toString();
+            tcv.version_date = Date.now();
+            tcv.author = author;
+            TableModel.tcvCreate(tcv);
+            TableModel.delTableContentById(id)
+                .then(function () {
+                    return res.json({ code: 0, message: 'successfully' });
+                })
+                .catch(function (e) {
+                    return res.status(401).json({ code: 10000, message: e.message });
+                });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
 });
 
 module.exports = router;
