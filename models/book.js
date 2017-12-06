@@ -32,6 +32,8 @@ module.exports = {
   //修改
   updateBookById: function updateBookById(id, data) {
     return Book.update({ _id: id }, { $set: data }).exec();
-  }
-
+  },
+  delBookById: function delBookById(bookId) {
+    return Book.remove({ _id: emailId }).exec();
+}
 };
