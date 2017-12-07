@@ -48,7 +48,7 @@ router.get('/create2', function (req, res, next) {
         }
         BookModel.create(book)
             .then(function (b) {
-                var d=0;
+                var d = 0;
             })
             .catch(next);
     }, this);
@@ -75,7 +75,7 @@ router.get('/create3', function (req, res, next) {
         }
         BookModel.create(book)
             .then(function (b) {
-                var d=0;
+                var d = 0;
             })
             .catch(next);
     }, this);
@@ -84,42 +84,80 @@ router.get('/create3', function (req, res, next) {
 // POST /create 创建图书
 router.post('/create', checkLogin, function (req, res, next) {
     var bookId = req.body.bookId;
-    var count = req.body.count;
-    var validitySecond = req.body.validitySecond;
+    var bookname = req.body.bookname;
+    var branch = req.body.branch;
+    var editor = req.body.editor;
+    var author = req.body.author;
     var userId = req.body.userId;
     var book = {
         bookId: bookId,
-        count: parseInt(count),
-        createUser: userId
+        bookname: bookname,
+        branch: branch,
+        editor: editor,
+        author: author
     };
     BookModel.create(book)
         .then(function (b) {
-            return res.json({ code: 0, message: 'Create successfully', bookid: b.ops[0]._id.toString() });
+            return res.json({ code: 0, message: 'Create successfully', bookid: bookId });
         })
         .catch(next);
 });
 // POST /update 创建图书
 router.post('/update', checkLogin, function (req, res, next) {
     var bookId = req.body.bookId;
+    var bookname = req.body.bookname;
+    var branch = req.body.branch;
+    var editor = req.body.editor;
+    var author = req.body.author;
+    var userId = req.body.userId;
     BookModel.getBookById(bookId)
-    .then(function (b) {
-        //ssssss
-        BookModel.updateBookById(bookId,b)
         .then(function (b) {
-            return res.json({ code: 0, message: 'Update successfully', bookid: b.ops[0]._id.toString() });
+            if (bookname != undefined) {
+                b.bookname = bookname;
+            }
+            if (branch != undefined) {
+                b.branch = branch;
+            }
+            if (editor != undefined) {
+                b.editor = editor;
+            }
+            if (author != undefined) {
+                b.author = author;
+            }
+            BookModel.updateBookById(bookId, b)
+                .then(function (b) {
+                    return res.json({ code: 0, message: 'Update successfully', bookid: bookId });
+                })
+                .catch(next);
         })
         .catch(next);
-    })
-    .catch(next);
 });
 
 router.get('/remove', checkLogin, function (req, res, next) {
-    var bookId = req.params.bookId;
-    var author = req.session.user._id;
-    BookModel.delBookById(emailId)
-      .then(function () {
-        return res.json({ code: 0, message: 'Del successfully', bookid: b.ops[0]._id.toString() });
-      })
-      .catch(next);
-  });
+    var bookId = req.query.bookId;
+    BookModel.delBookById(bookId)
+        .then(function () {
+            return res.json({ code: 0, message: 'Del successfully', bookid: bookId });
+        })
+        .catch(next);
+});
+
+router.get('/search', function (req, res, next) {
+    var search = req.query.search;
+    var page = req.query.page ? parseInt(req.query.page) : 1;
+    var count = req.query.count ? parseInt(req.query.count) : 10;
+    BookModel.searchEbooksCount(search)
+        .then(function (n) {
+            BookModel.searchEbooks(search, page, count)
+                .then(function (result) {
+                    return res.json({ code: 0, message: 'successfully', page: page, count: count, total: n, books: result });
+                })
+                .catch(function (e) {
+                    return res.status(401).json({ code: 10000, message: e.message });
+                });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+});
 module.exports = router;
