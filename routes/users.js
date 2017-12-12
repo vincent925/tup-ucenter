@@ -8,7 +8,7 @@ var config = require('config-lite')(__dirname);
 var moment = require('moment');
 
 // POST /signin 用户注册
-router.post('/create', checkLogin, function (req, res, next) {
+router.post('/create', function (req, res, next) {
     var name = req.body.name;
     var email = req.body.email;
     var password = req.body.password;
@@ -18,15 +18,15 @@ router.post('/create', checkLogin, function (req, res, next) {
     var openid = req.body.openid;
     var site = req.body.site;
     var ip = req.body.ip;
-    // if (password != undefined) {
+    if (password != undefined) {
     //     if (password.length < 6) {
     //         return res.status(400).send({
     //             code: 10001,
     //             message: '密码至少 6 个字符'
     //         });
     //     }
-         password = sha1(password);
-    // }
+    password = sha1(password);
+    }
 
     // if (email != undefined) {
     //     if (email.length < 6) {
@@ -181,10 +181,16 @@ router.post('/update', checkLogin, function (req, res, next) {
         });
 
 });
-router.get('/', checkLogin, function (req, res, next) {
+router.get('/', function (req, res, next) {
     var id = req.query.id;
     UserModel.getUserById(id)
         .then(function (user) {
+            if (user.password != undefined) {
+                user.hasPwd = true;
+            }
+            else {
+                user.hasPwd = false;
+            }
             delete user.password;
             return res.json({ code: 0, message: 'Successfully', user: user });
         })
