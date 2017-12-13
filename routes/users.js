@@ -11,6 +11,7 @@ var moment = require('moment');
 router.post('/create', function (req, res, next) {
     var name = req.body.name;
     var email = req.body.email;
+    var phone = req.body.phone;
     var password = req.body.password;
     var avatar = req.body.avatar;
     var gender = req.body.gender;
@@ -19,13 +20,13 @@ router.post('/create', function (req, res, next) {
     var site = req.body.site;
     var ip = req.body.ip;
     if (password != undefined) {
-    //     if (password.length < 6) {
-    //         return res.status(400).send({
-    //             code: 10001,
-    //             message: '密码至少 6 个字符'
-    //         });
-    //     }
-    password = sha1(password);
+        //     if (password.length < 6) {
+        //         return res.status(400).send({
+        //             code: 10001,
+        //             message: '密码至少 6 个字符'
+        //         });
+        //     }
+        password = sha1(password);
     }
 
     // if (email != undefined) {
@@ -50,6 +51,9 @@ router.post('/create', function (req, res, next) {
     }
     if (email != undefined) {
         u.email = email;
+    }
+    if (phone != undefined) {
+        u.phone = phone;
     }
     if (gender != undefined) {
         u.gender = gender;
@@ -113,6 +117,7 @@ router.post('/update', checkLogin, function (req, res, next) {
     var id = req.body.id;
     var name = req.body.name;
     var email = req.body.email;
+    var phone = req.body.phone;
     var password = req.body.password;
     var avatar = req.body.avatar;
     var gender = req.body.gender;
@@ -120,15 +125,15 @@ router.post('/update', checkLogin, function (req, res, next) {
     var openid = req.body.openid;
     var site = req.body.site;
     var ip = req.body.ip;
-    // if (password != undefined) {
-    //     if (password.length < 6) {
-    //         return res.status(400).send({
-    //             code: 10001,
-    //             message: '密码至少 6 个字符'
-    //         });
-    //     }
-    //     password = sha1(password);
-    // }
+    if (password != undefined) {
+        //     if (password.length < 6) {
+        //         return res.status(400).send({
+        //             code: 10001,
+        //             message: '密码至少 6 个字符'
+        //         });
+        //     }
+        password = sha1(password);
+    }
 
     // if (email != undefined) {
     //     if (email.length < 6) {
@@ -152,6 +157,9 @@ router.post('/update', checkLogin, function (req, res, next) {
             }
             if (email != undefined) {
                 u.email = email;
+            }
+            if (phone != undefined) {
+                u.phone = phone;
             }
             if (gender != undefined) {
                 u.gender = gender;
