@@ -28,4 +28,21 @@ router.get('/bybook',checkLogin, function (req, res, next) {
             return res.status(401).json({ code: 10000, message: e.message });
         });
 });
+
+router.get('/create', function (req, res, next) {
+    var bookId = req.query.bookId;
+    var userId = req.query.userId;
+    var batch = {
+        bookId: bookId,
+        count: 0,
+        createUser: userId
+    };
+    BatchModel.create(batch)
+        .then(function (result) {
+            return res.json({ code: 0, message: 'Successfully',batchs: result });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+});
 module.exports = router;

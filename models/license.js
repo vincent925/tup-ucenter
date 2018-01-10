@@ -43,6 +43,16 @@ module.exports = {
       .find({ bookId: bookId, ActivateUserID: userid })
       .addCreatedAt()
       .exec();
+  },
+  //获取没有批次的序列号
+  searchAllLicenseByNoBatch: function searchAllLicenseByNoBatch(bookId) {
+    return License
+      .find({ "batchId": { $exists: false }, bookId: bookId });
   }
-
+  ,
+  //获取没有批次的序列号
+  searchAllLicenseByNoCode: function searchAllLicenseByNoCode() {
+    return License
+      .find({ "code": { $exists: false }});
+  }
 };

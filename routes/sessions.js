@@ -7,7 +7,8 @@ var checkLogin = require('../middlewares/check').checkLogin;
 
 // GET /signin 登录页
 router.get('/', function (req, res, next) {
-    return res.json({ message: 'not find' });
+
+    return res.json({ message: sha1('kaifazhe') });
 });
 
 // POST /create 用户登录
