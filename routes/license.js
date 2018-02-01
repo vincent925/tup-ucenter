@@ -47,7 +47,7 @@ router.post('/create', checkLogin, function (req, res, next) {
     var bookId = req.body.bookId;
     var count = req.body.count;
     var type = req.body.type;
-    var category= req.body.category;
+    var category = req.body.category;
     var validitySecond = req.body.validitySecond;
     var userId = req.body.userId;
     var batch = {
@@ -178,27 +178,40 @@ router.get('/getLicense', checkLogin, function (req, res, next) {
 
 router.get('/xiufu', function (req, res, next) {
     var bookId = req.query.bookId;
-    var batchId = req.query.batchId;
-    LicenseModel.searchAllLicenseByNoBatch(bookId)
-        .then(function (result) {
-            if (result == null) {
-                return res.json({ code: 10010, message: 'Invalid license' });
-            }
-            for (var i = 0; i < result.length; i++) {
-                result[i].batchId = batchId;
-                LicenseModel.updateLicenseById(result[i]._id, result[i])
-                .then(function (r) {
-                    
+    //var batchId = req.query.batchId;
+    var batch = {
+        bookId: bookId,
+        count: 0,
+        createUser: '0'
+    };
+    BatchModel.create(batch)
+        .then(function (bch) {
+            var batchId=bch[i]._id;
+            LicenseModel.searchAllLicenseByNoBatch(bookId)
+                .then(function (result) {
+                    if (result == null) {
+                        return res.json({ code: 10010, message: 'Invalid license' });
+                    }
+                    for (var i = 0; i < result.length; i++) {
+                        result[i].batchId = batchId;
+                        LicenseModel.updateLicenseById(result[i]._id, result[i])
+                            .then(function (r) {
+
+                            })
+                            .catch(function (e) {
+                                return res.status(401).json({ code: 10000, message: e.message });
+                            });
+                    }
+                    return res.json({ code: 0, message: 'Successfully' });
                 })
                 .catch(function (e) {
                     return res.status(401).json({ code: 10000, message: e.message });
                 });
-            }
-            return res.json({ code: 0, message: 'Successfully'});
         })
         .catch(function (e) {
             return res.status(401).json({ code: 10000, message: e.message });
         });
+
 });
 //批量把code赋值
 router.get('/xiufu1', function (req, res, next) {
@@ -210,14 +223,14 @@ router.get('/xiufu1', function (req, res, next) {
             for (var i = 0; i < result.length; i++) {
                 result[i].code = result[i]._id.toString();
                 LicenseModel.updateLicenseById(result[i]._id, result[i])
-                .then(function (r) {
-                    
-                })
-                .catch(function (e) {
-                    return res.status(401).json({ code: 10000, message: e.message });
-                });
+                    .then(function (r) {
+
+                    })
+                    .catch(function (e) {
+                        return res.status(401).json({ code: 10000, message: e.message });
+                    });
             }
-            return res.json({ code: 0, message: 'Successfully'});
+            return res.json({ code: 0, message: 'Successfully' });
         })
         .catch(function (e) {
             return res.status(401).json({ code: 10000, message: e.message });
