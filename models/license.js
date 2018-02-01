@@ -26,6 +26,12 @@ module.exports = {
       .addCreatedAt()
       .exec();
   },
+  getLicenseByCode: function getLicenseByCode(id) {
+    return License
+      .findOne({ code: id })
+      .addCreatedAt()
+      .exec();
+  },
   //修改序列号
   updateLicenseById: function updateLicenseById(id, data) {
     return License.update({ _id: id }, { $set: data }).exec();
@@ -53,6 +59,6 @@ module.exports = {
   //获取没有批次的序列号
   searchAllLicenseByNoCode: function searchAllLicenseByNoCode() {
     return License
-      .find({ "code": { $exists: false }});
+      .find({ "code": { $exists: false }}).limit(10000);
   }
 };
