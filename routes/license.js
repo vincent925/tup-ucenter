@@ -162,6 +162,20 @@ router.get('/check', checkLogin, function (req, res, next) {
         });
 });
 
+router.get('/check2', checkLogin, function (req, res, next) {
+    var license = req.query.license;
+    LicenseModel.getLicenseByCode(license)
+        .then(function (result) {
+            if (result == null) {
+                return res.json({ code: 10010, message: 'Invalid license' });
+            }
+            return res.json({ code: 0, message: 'Successfully', license: result });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+});
+
 router.get('/getLicense', checkLogin, function (req, res, next) {
     var license = req.query.license;
     LicenseModel.getLicenseByLicense(license)
