@@ -250,4 +250,15 @@ router.get('/xiufu1', function (req, res, next) {
             return res.status(401).json({ code: 10000, message: e.message });
         });
 });
+
+router.get('/xiufu2', function (req, res, next) {
+    LicenseModel.searchAllLicenseByNoCode()
+        .then(function (result) {
+                return res.json({ message: result.length });
+           
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+});
 module.exports = router;
