@@ -200,7 +200,7 @@ router.get('/xiufu', function (req, res, next) {
     };
     BatchModel.create(batch)
         .then(function (bch) {
-            var batchId=bch[0]._id;
+            var batchId=bch.ops[0]._id.toString();
             LicenseModel.searchAllLicenseByNoBatch(bookId)
                 .then(function (result) {
                     if (result == null) {
