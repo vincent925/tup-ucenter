@@ -59,6 +59,6 @@ module.exports = {
   //获取没有批次的序列号
   searchAllLicenseByNoCode: function searchAllLicenseByNoCode() {
     return License
-      .find({ "code": { $exists: false }}).limit(10000);
+      .find({ "code": { $exists: false }}).limit(100000);
   }
 };
