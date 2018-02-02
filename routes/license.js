@@ -123,7 +123,7 @@ router.post('/create2', function (req, res, next) {
 router.post('/activate', checkLogin, function (req, res, next) {
     var license = req.body.license;
     var userId = req.body.userId;
-    LicenseModel.getLicenseById(license)
+    LicenseModel.getLicenseByCode(license)
         .then(function (result) {
             if (result == null) {
                 return res.json({ code: 10010, message: 'Invalid license' });
@@ -178,7 +178,7 @@ router.get('/check', checkLogin, function (req, res, next) {
 
 router.get('/getLicense', checkLogin, function (req, res, next) {
     var license = req.query.license;
-    LicenseModel.getLicenseByLicense(license)
+    LicenseModel.getLicenseByCode(license)
         .then(function (result) {
             if (result == null) {
                 return res.json({ code: 10010, message: 'Invalid license' });
