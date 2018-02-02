@@ -2,6 +2,7 @@ var sha1 = require('sha1');
 var express = require('express');
 var router = express.Router();
 var UserModel = require('../models/users');
+var UserExModel = require('../models/userex');
 var checkLogin = require('../middlewares/check').checkLogin;
 var crypto = require('crypto');
 var config = require('config-lite')(__dirname);
@@ -17,6 +18,7 @@ router.post('/create', function (req, res, next) {
     var gender = req.body.gender;
     var type = req.body.type;
     var openid = req.body.openid;
+    var unionid = req.body.unionid;
     var site = req.body.site;
     var ip = req.body.ip;
     if (password != undefined) {
@@ -63,6 +65,9 @@ router.post('/create', function (req, res, next) {
     }
     if (openid != undefined) {
         u.openid = openid;
+    }
+    if (unionid != undefined) {
+        u.unionid = unionid;
     }
     if (site != undefined) {
         u.site = site;
@@ -123,6 +128,7 @@ router.post('/update', checkLogin, function (req, res, next) {
     var gender = req.body.gender;
     var type = req.body.type;
     var openid = req.body.openid;
+    var unionid = req.body.unionid;
     var site = req.body.site;
     var ip = req.body.ip;
     if (password != undefined) {
@@ -169,6 +175,9 @@ router.post('/update', checkLogin, function (req, res, next) {
             }
             if (openid != undefined) {
                 u.openid = openid;
+            }
+            if (unionid != undefined) {
+                u.unionid = unionid;
             }
             if (site != undefined) {
                 u.site = site;
@@ -250,6 +259,87 @@ router.get('/findPassword', checkLogin, function (req, res, next) {
     }
 
 });
+//获取某用户的绑定信息
+router.get('/getBindInfo', function (req, res, next) {
+    var userId = req.query.userId;
+    UserModel.getUserById(userId)
+        .then(function (u) {
+            UserExModel.getUserExByUserId(userId)
+                .then(function (result) {
+                    u.binds = result;
+                    return res.json({ code: 0, message: 'Successfully', user: u });
+                })
+                .catch(function (e) {
+                    return res.status(401).json({ code: 10000, message: e.message });
+                });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+
+});
+//批量生成新模型
+router.get('/allBind', function (req, res, next) {
+    UserModel.getAllUsers()
+        .then(function (users) {
+            for (var i = 0; i < users.length; i++) {
+                //users[i].code
+                var uex = {};
+                uex.userId = users[i]._id.toString();
+                uex.type = users[i].type;
+                uex.openid = users[i].openid;
+                uex.unionid = users[i].unionid;
+                uex.site = users[i].site;
+                UserExModel.create(uex);
+            }
+            return res.json({ code: 0, message: 'Successfully' });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+
+});
+//绑定微信号
+router.post('/bind', function (req, res, next) {
+    var id = req.body.id;
+    var openid = req.body.openid;
+    var unionid = req.body.unionid;
+    var type = req.body.type;
+    var site = req.body.site;
+    UserModel.getUserByOpenidAndUnionid(openid, unionid)
+        .then(function (result) {
+            if (result == null) {
+                UserModel.getUserById(id)
+                    .then(function (u) {
+                        var uex = {};
+                        uex.userId = id;
+                        uex.type = type;
+                        uex.openid = openid;
+                        uex.unionid = unionid;
+                        uex.site = site;
+                        UserExModel.create(uex)
+                            .then(function (result) {
+                                return res.json({ code: 0, message: 'Successfully' ,userId:id});
+                            })
+                            .catch(function (e) {
+                                return res.status(401).json({ code: 10000, message: e.message });
+                            });
+                    })
+                    .catch(function (e) {
+                        return res.status(401).json({ code: 10000, message: e.message });
+                    });
+            }
+            else {
+                return res.status(401).json({ code: 10011, message: e.message });
+            }
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+
+
+});
+
 // POST /findPassword 找回密码
 router.post('/findPassword', function (req, res, next) {
     var email = req.body.email;

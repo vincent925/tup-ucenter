@@ -10,7 +10,7 @@
 <code key="10008" value="用户已存在"/>
 <code key="10009" value="序列号已激活"/>
 <code key="10010" value="序列号不存在"/>
-<code key="10001" value="系统错误"/>
+<code key="10011" value="该微信已绑定"/>
 
 <code key="11001" value="名称至少 6 个字符"/>
 <code key="11002" value="结构不能为空"/>

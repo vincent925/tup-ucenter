@@ -15,6 +15,13 @@ module.exports = {
       .addCreatedAt()
       .exec();
   },
+  getAllUsers: function getAllUsers() {
+    
+    return User
+      .find()
+      .addCreatedAt()
+      .exec();
+  },
   getUserById: function getUserById(id) {
     return User
       .findOne({ _id: id })
@@ -31,9 +38,30 @@ module.exports = {
       .addCreatedAt()
       .exec();
   },
+  getUserByOpenidAndUnionid: function getUserByOpenidAndUnionid(openid,unionid) {
+    var orQuery1 = {};
+    if (openid) {
+      orQuery1.openid = openid;
+      orQuery1.unionid = unionid;
+    }
+    return User
+      .findOne(orQuery1)
+      .addCreatedAt()
+      .exec();
+  },
   //修改
   updateUserById: function updateUserById(id, data) {
       return User.update({ _id: id }, { $set: data }).exec();
+  },
+  //根据手机号找人
+  getUserByPhone: function getUserByPhone(phone) {
+    var orQuery = {};
+    if (phone) {
+      orQuery.phone = phone;
+    }
+    return User
+      .findOne(orQuery)
+      .addCreatedAt()
+      .exec();
   }
-
 };

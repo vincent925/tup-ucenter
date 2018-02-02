@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
 });
 
 // POST /create 用户登录
-router.post('/create', checkLogin,function (req, res, next) {
+router.post('/create', checkLogin, function (req, res, next) {
     var email = req.body.email;
     var password = req.body.password;
     UserModel.getUserByEmail(email)
@@ -31,15 +31,22 @@ router.post('/create', checkLogin,function (req, res, next) {
         .catch(next);
 });
 
-router.post('/wechat/create',checkLogin, function (req, res, next) {
+router.post('/wechat/create', function (req, res, next) {
     var openid = req.body.openid;
+    var unionid = req.body.unionid;
     UserModel.getUserByOpenid(openid)
         .then(function (user) {
             if (!user) {
                 //req.flash('error', '用户不存在');
                 return res.json({ code: 10003, message: 'User not find' });
             }
-            return res.json({ code: 0, message: 'Login successfully', userId: user._id  });
+            user.unionid = unionid;
+            UserModel.updateUserById(user._id.toString(),user)
+                .then(function (user) {
+                    return res.json({ code: 0, message: 'Login successfully', userId: user._id });
+                })
+                .catch(next);
+
         })
         .catch(next);
 });
