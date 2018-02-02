@@ -148,7 +148,7 @@ router.post('/activate', checkLogin, function (req, res, next) {
 });
 
 // GET /check 检查序列号
-router.get('/check', checkLogin, function (req, res, next) {
+router.get('/check2', checkLogin, function (req, res, next) {
     var license = req.query.license;
     LicenseModel.getLicenseById(license)
         .then(function (result) {
@@ -162,7 +162,7 @@ router.get('/check', checkLogin, function (req, res, next) {
         });
 });
 
-router.get('/check2', checkLogin, function (req, res, next) {
+router.get('/check', checkLogin, function (req, res, next) {
     var license = req.query.license;
     LicenseModel.getLicenseByCode(license)
         .then(function (result) {
