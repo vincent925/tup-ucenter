@@ -40,12 +40,15 @@ router.post('/wechat/create', function (req, res, next) {
                 //req.flash('error', '用户不存在');
                 return res.json({ code: 10003, message: 'User not find' });
             }
-            user.unionid = unionid;
-            UserModel.updateUserById(user._id.toString(),user)
-                .then(function (user) {
-                    return res.json({ code: 0, message: 'Login successfully', userId: user._id });
-                })
-                .catch(next);
+            if(unionid!=null){
+                user.unionid = unionid;
+                UserModel.updateUserById(user._id.toString(),user)
+                    .then(function (user) {
+                        return res.json({ code: 0, message: 'Login successfully', userId: user._id });
+                    })
+                    .catch(next);
+            }
+            return res.json({ code: 0, message: 'Login successfully', userId: user._id });
 
         })
         .catch(next);
