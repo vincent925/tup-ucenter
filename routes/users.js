@@ -40,7 +40,6 @@ router.post('/create', function (req, res, next) {
     //     }
     // }
 
-
     var u = {};
     if (name != undefined) {
         u.name = name;
@@ -103,14 +102,58 @@ router.post('/create', function (req, res, next) {
                     return res.json({ code: 10008, message: 'User already exists' });
                 }
                 else {
-                    UserModel.create(u)
-                        .then(function (result) {
-                            user = result.ops[0];
-                            return res.json({ code: 0, message: 'Successfully', userId: user._id });
-                        })
-                        .catch(function (e) {
-                            return res.status(401).json({ code: 10000, message: e.message });
-                        });
+                    if (unionid != null) {
+                        UserModel.getUserByUnionid(unionid)
+                            .then(function (result) {
+                                if (result != null) {
+                                    //找不到openid但是有相同的unionid
+                                    UserModel.getUserById(result._id.toString())
+                                        .then(function (u) {
+                                            var uex = {};
+                                            uex.userId = result._id.toString();
+                                            uex.type = type;
+                                            uex.openid = openid;
+                                            uex.unionid = unionid;
+                                            uex.site = site;
+                                            UserExModel.create(uex)
+                                                .then(function (result) {
+                                                    return res.json({ code: 0, message: 'Successfully', userId: result._id });
+                                                })
+                                                .catch(function (e) {
+                                                    return res.status(401).json({ code: 10000, message: e.message });
+                                                });
+                                        })
+                                        .catch(function (e) {
+                                            return res.status(401).json({ code: 10000, message: e.message });
+                                        });
+                                }
+                                else {
+                                    UserModel.create(u)
+                                        .then(function (result) {
+                                            user = result.ops[0];
+                                            return res.json({ code: 0, message: 'Successfully', userId: user._id });
+                                        })
+                                        .catch(function (e) {
+                                            return res.status(401).json({ code: 10000, message: e.message });
+                                        });
+                                }
+                            })
+                            .catch(function (e) {
+                                return res.status(401).json({ code: 10000, message: e.message });
+                            });
+                    }
+                    else {
+                        UserModel.create(u)
+                            .then(function (result) {
+                                user = result.ops[0];
+                                return res.json({ code: 0, message: 'Successfully', userId: user._id });
+                            })
+                            .catch(function (e) {
+                                return res.status(401).json({ code: 10000, message: e.message });
+                            });
+                    }
+
+
                 }
             })
             .catch(function (e) {
@@ -319,7 +362,7 @@ router.post('/bind', function (req, res, next) {
                         uex.site = site;
                         UserExModel.create(uex)
                             .then(function (result) {
-                                return res.json({ code: 0, message: 'Successfully' ,userId:id});
+                                return res.json({ code: 0, message: 'Successfully', userId: id });
                             })
                             .catch(function (e) {
                                 return res.status(401).json({ code: 10000, message: e.message });

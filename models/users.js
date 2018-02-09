@@ -38,11 +38,24 @@ module.exports = {
       .addCreatedAt()
       .exec();
   },
+  getUserByUnionid: function getUserByUnionid(unionid) {
+    var orQuery1 = {};
+    if (unionid) {
+      orQuery1.unionid = unionid;
+    }
+    return User
+      .findOne(orQuery1)
+      .addCreatedAt()
+      .exec();
+  },
   getUserByOpenidAndUnionid: function getUserByOpenidAndUnionid(openid,unionid) {
     var orQuery1 = {};
     if (openid) {
-      orQuery1.openid = openid;
-      orQuery1.unionid = unionid;
+      if(unionid)
+      {
+        orQuery1.openid = openid;
+        orQuery1.unionid = unionid;
+      }
     }
     return User
       .findOne(orQuery1)

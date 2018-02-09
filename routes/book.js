@@ -134,7 +134,7 @@ router.get('/create2', function (req, res, next) {
         book.createTime = moment(new Date().now).format("YYYY-MM-DD HH:mm:ss");
         BookModel.create(book)
             .then(function (b) {
-                var d = 0;
+                //没有处理
             })
             .catch(next);
     }, this);
