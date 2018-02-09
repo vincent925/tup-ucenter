@@ -74,7 +74,7 @@ router.post('/create', function (req, res, next) {
     if (ip != undefined) {
         u.ip = ip;
     }
-    if (email != undefined) {
+    if (type == "none") {
         UserModel.getUserByEmail(u.email)
             .then(function (u1) {
                 if (u1 != null) {
