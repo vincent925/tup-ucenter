@@ -117,7 +117,7 @@ router.post('/create', function (req, res, next) {
                                             uex.site = site;
                                             UserExModel.create(uex)
                                                 .then(function (result) {
-                                                    return res.json({ code: 0, message: 'Successfully', userId: result._id });
+                                                    return res.json({ code: 0, message: 'Successfully', userId: uex.userId });
                                                 })
                                                 .catch(function (e) {
                                                     return res.status(401).json({ code: 10000, message: e.message });
