@@ -321,6 +321,26 @@ router.get('/getBindInfo', function (req, res, next) {
         });
 
 });
+//根据站点和unionid获取某用户的信息
+router.get('/getUserBySiteAndUnionid', function (req, res, next) {
+    var site = req.query.site;
+    var unionid = req.query.unionid;
+    UserModel.getUserBySiteAndUnionid(site,unionid)
+        .then(function (u) {
+            UserExModel.getUserExByUserId(u._id.toString())
+                .then(function (result) {
+                    u.binds = result;
+                    return res.json({ code: 0, message: 'Successfully', user: u });
+                })
+                .catch(function (e) {
+                    return res.status(401).json({ code: 10000, message: e.message });
+                });
+        })
+        .catch(function (e) {
+            return res.status(401).json({ code: 10000, message: e.message });
+        });
+
+});
 //批量生成新模型
 router.get('/allBind', function (req, res, next) {
     UserModel.getAllUsers()

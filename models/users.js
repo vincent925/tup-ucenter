@@ -62,6 +62,20 @@ module.exports = {
       .addCreatedAt()
       .exec();
   },
+  getUserBySiteAndUnionid: function getUserBySiteAndUnionid(site,unionid) {
+    var orQuery = {};
+    if (site) {
+      if(unionid)
+      {
+        orQuery.site = site;
+        orQuery.unionid = unionid;
+      }
+    }
+    return User
+      .findOne(orQuery)
+      .addCreatedAt()
+      .exec();
+  },
   //修改
   updateUserById: function updateUserById(id, data) {
       return User.update({ _id: id }, { $set: data }).exec();
