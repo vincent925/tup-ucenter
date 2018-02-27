@@ -247,21 +247,115 @@ router.get('/update2', function (req, res, next) {
 });
 
 // POST /create 创建图书
-router.post('/create', checkLogin, function (req, res, next) {
+router.post('/create',checkLogin, function (req, res, next) {
     var bookId = req.body.bookId;
     var bookname = req.body.bookname;
     var branch = req.body.branch;
     var editor = req.body.editor;
     var author = req.body.author;
+    var ISBN = req.body.ISBN;
+    var authorCompany = req.body.authorCompany;
+    var ztfCategory = req.body.ztfCategory;
+    var swCategory = req.body.swCategory;
+    var wdCategory = req.body.wdCategory;
+    var zyCategory = req.body.zyCategory;
+    var kcCategory = req.body.kcCategory;
+    var publishDate = req.body.publishDate;
+    var editRoom = req.body.editRoom;
+    var price = req.body.price;
+    var CIP = req.body.CIP;
+    var zkCategory = req.body.zkCategory;
+    var mo = req.body.mo;
+    var pages = req.body.pages;
+    var seriesName = req.body.seriesName;
+    var introduce = req.body.introduce;
+    var binding = req.body.binding;
+    var bookType = req.body.bookType;
+    var bookNumber = req.body.bookNumber;
+    var sheet = req.body.sheet;
+    var wordNumber = req.body.wordNumber;
     var userId = req.body.userId;
-    var book = {
-        bookId: bookId,
-        bookname: bookname,
-        branch: branch,
-        editor: editor,
-        author: author
-    };
-    book.lastUpdateTime = Date.now();
+    var book = {};
+    if (bookId != undefined) {
+        book.bookId = bookId;
+    }
+    if (bookname != undefined) {
+        book.bookname = bookname;
+    }
+    if (ISBN != undefined) {
+        book.ISBN = ISBN;
+    }
+    if (branch != undefined) {
+        book.branch = branch;
+    }
+    if (editor != undefined) {
+        book.editor = editor;
+    }
+    if (author != undefined) {
+        book.author = author;
+    }
+    if (authorCompany != undefined) {
+        book.authorCompany = authorCompany;
+    }
+    if (ztfCategory != undefined) {
+        book.ztfCategory = ztfCategory;
+    }
+    if (swCategory != undefined) {
+        book.swCategory = swCategory;
+    }
+    if (wdCategory != undefined) {
+        book.wdCategory = wdCategory;
+    }
+    if (zyCategory != undefined) {
+        book.zyCategory = zyCategory;
+    }
+    if (kcCategory != undefined) {
+        book.kcCategory = kcCategory;
+    }
+    if (publishDate != undefined) {
+        book.publishDate = moment(new Date(publishDate)).format("YYYY-MM-DD HH:mm:ss");
+    }
+    if (editRoom != undefined) {
+        book.editRoom = editRoom;
+    }
+    if (price != undefined) {
+        book.price = price;
+    }
+    if (CIP != undefined) {
+        book.CIP = CIP;
+    }
+    if (zkCategory != undefined) {
+        book.zkCategory = zkCategory;
+    }
+    if (mo != undefined) {
+        book.mo = mo;
+    }
+    if (pages != undefined) {
+        book.pages = pages;
+    }
+    if (seriesName != undefined) {
+        book.seriesName = seriesName;
+    }
+    if (introduce != undefined) {
+        book.introduce = introduce;
+    }
+    if (binding != undefined) {
+        book.binding = binding;
+    }
+    if (bookType != undefined) {
+        book.bookType = bookType;
+    }
+    if (bookNumber != undefined) {
+        book.bookNumber = bookNumber;
+    }
+    if (sheet != undefined) {
+        book.sheet = sheet;
+    }
+    if (wordNumber != undefined) {
+        book.wordNumber = wordNumber;
+    }
+    book.lastUpdateTime = moment(new Date().now).format("YYYY-MM-DD HH:mm:ss");
+    book.createTime = moment(new Date().now).format("YYYY-MM-DD HH:mm:ss");
     BookModel.create(book)
         .then(function (b) {
             return res.json({ code: 0, message: 'Create successfully', bookid: bookId });
@@ -269,29 +363,116 @@ router.post('/create', checkLogin, function (req, res, next) {
         .catch(next);
 });
 // POST /update 创建图书
-router.post('/update', checkLogin, function (req, res, next) {
+router.post('/update',checkLogin, function (req, res, next) {
     var bookId = req.body.bookId;
     var bookname = req.body.bookname;
     var branch = req.body.branch;
     var editor = req.body.editor;
     var author = req.body.author;
+    var ISBN = req.body.ISBN;
+    var authorCompany = req.body.authorCompany;
+    var ztfCategory = req.body.ztfCategory;
+    var swCategory = req.body.swCategory;
+    var wdCategory = req.body.wdCategory;
+    var zyCategory = req.body.zyCategory;
+    var kcCategory = req.body.kcCategory;
+    var publishDate = req.body.publishDate;
+    var editRoom = req.body.editRoom;
+    var price = req.body.price;
+    var CIP = req.body.CIP;
+    var zkCategory = req.body.zkCategory;
+    var mo = req.body.mo;
+    var pages = req.body.pages;
+    var seriesName = req.body.seriesName;
+    var introduce = req.body.introduce;
+    var binding = req.body.binding;
+    var bookType = req.body.bookType;
+    var bookNumber = req.body.bookNumber;
+    var sheet = req.body.sheet;
+    var wordNumber = req.body.wordNumber;
     var userId = req.body.userId;
     BookModel.getBookById(bookId)
-        .then(function (b) {
+        .then(function (book) {
+            if (bookId != undefined) {
+                book.bookId = bookId;
+            }
             if (bookname != undefined) {
-                b.bookname = bookname;
+                book.bookname = bookname;
+            }
+            if (ISBN != undefined) {
+                book.ISBN = ISBN;
             }
             if (branch != undefined) {
-                b.branch = branch;
+                book.branch = branch;
             }
             if (editor != undefined) {
-                b.editor = editor;
+                book.editor = editor;
             }
             if (author != undefined) {
-                b.author = author;
+                book.author = author;
             }
-            b.lastUpdateTime = Date.now();
-            BookModel.updateBookById(bookId, b)
+            if (authorCompany != undefined) {
+                book.authorCompany = authorCompany;
+            }
+            if (ztfCategory != undefined) {
+                book.ztfCategory = ztfCategory;
+            }
+            if (swCategory != undefined) {
+                book.swCategory = swCategory;
+            }
+            if (wdCategory != undefined) {
+                book.wdCategory = wdCategory;
+            }
+            if (zyCategory != undefined) {
+                book.zyCategory = zyCategory;
+            }
+            if (kcCategory != undefined) {
+                book.kcCategory = kcCategory;
+            }
+            if (publishDate != undefined) {
+                book.publishDate = moment(new Date(publishDate)).format("YYYY-MM-DD HH:mm:ss");
+            }
+            if (editRoom != undefined) {
+                book.editRoom = editRoom;
+            }
+            if (price != undefined) {
+                book.price = price;
+            }
+            if (CIP != undefined) {
+                book.CIP = CIP;
+            }
+            if (zkCategory != undefined) {
+                book.zkCategory = zkCategory;
+            }
+            if (mo != undefined) {
+                book.mo = mo;
+            }
+            if (pages != undefined) {
+                book.pages = pages;
+            }
+            if (seriesName != undefined) {
+                book.seriesName = seriesName;
+            }
+            if (introduce != undefined) {
+                book.introduce = introduce;
+            }
+            if (binding != undefined) {
+                book.binding = binding;
+            }
+            if (bookType != undefined) {
+                book.bookType = bookType;
+            }
+            if (bookNumber != undefined) {
+                book.bookNumber = bookNumber;
+            }
+            if (sheet != undefined) {
+                book.sheet = sheet;
+            }
+            if (wordNumber != undefined) {
+                book.wordNumber = wordNumber;
+            }
+            book.lastUpdateTime = moment(new Date().now).format("YYYY-MM-DD HH:mm:ss");
+            BookModel.updateBookById(bookId, book)
                 .then(function (b) {
                     return res.json({ code: 0, message: 'Update successfully', bookid: bookId });
                 })
