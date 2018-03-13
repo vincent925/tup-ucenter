@@ -15,6 +15,16 @@ module.exports = {
             .addCreatedAt()
             .exec();
     },
+    getUserByName: function getUserByName(name) {
+        var orQuery1 = {};
+        if (name) {
+            orQuery1.name = name;
+        }
+        return SysUser
+            .findOne(orQuery1)
+            .addCreatedAt()
+            .exec();
+    },
     getUserById: function getUserById(id) {
         return SysUser
             .findOne({ _id: id })

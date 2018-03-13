@@ -19,6 +19,7 @@ module.exports = function (app) {
   app.use('/license', require('./license'));
   app.use('/batch', require('./batch'));
   app.use('/table', require('./table'));
+  app.use('/oauth', require('./oauth'));
   // 404 page
   app.use(function (req, res) {
     if (!res.headersSent) {
