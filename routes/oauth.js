@@ -8,6 +8,8 @@ var jwt = require('jwt-simple');
 var moment = require('moment');
 var config = require('config-lite')(__dirname);
 var UserModel = require('../models/users');
+var http = require('http');
+var qs = require('querystring');
 
 //jwt参考文章：http://blog.csdn.net/cruise_h/article/details/50888225
 
@@ -18,6 +20,7 @@ var UserModel = require('../models/users');
 router.get('/authorize', function (req, res, next) {
     var client_id = req.query.client_id;
     var redirect_uri = req.query.redirect_uri;
+    var user_id = req.query.user_id;
     SysUserModel.getUserByName(client_id)
         .then(function (result) {
             if (result == null) {
@@ -27,7 +30,18 @@ router.get('/authorize', function (req, res, next) {
                 if (result.url == redirect_uri) {
                     var timestamp = Math.round(new Date().getTime() / 1000);
                     var encodeString = base64.encode(result.secret + timestamp);
-                    return res.json({ code: 0, message: 'Successfully', auth_code: encodeString });
+
+                    var ut = {};
+                    ut.code = encodeString;
+                    ut.userId = user_id;
+                    UserModel.createut(ut);
+
+                    http.get(redirect_uri + "?code=" + encodeString, function (res) {
+                        console.log("Got response: " + res.statusCode);
+                    }).on('error', function (e) {
+                        console.log("Got error: " + e.message);
+                    });
+                    return res.json({ code: 0, message: 'Successfully' });
                 }
                 else {
                     return res.status(401).json({ code: 12003, message: "redirect_uri error" });
@@ -42,49 +56,59 @@ router.post('/token', function (req, res, next) {
     var client_secret = req.body.client_secret;
     var redirect_uri = req.body.redirect_uri;
     var auth_code = req.body.auth_code;
-    var user_id = req.body.user_id;
-    SysUserModel.getUserByName(client_id)
-        .then(function (result) {
-            if (result == null) {
-                return res.status(401).json({ code: 12001, message: "Website not find" });
+    UserModel.getUtByCode(auth_code)
+        .then(function (ut) {
+            if (!ut) {
+                return res.status(401).send({ code: 12004, message: 'auth_code error' });
             }
             else {
-                if (result.secret == client_secret) {
-                    if (result.url == redirect_uri) {
-                        //签名解码
-                        var decodeString;
-                        try {
-                            decodeString = base64.decode(auth_code);
-                        } catch (e) {
-                            return res.json({ code: 12004, message: 'auth_code error' });
-                        }
-                        var secret = decodeString.substring(0, 16);
-                        var timestamp = parseInt(decodeString.substring(16, decodeString.length));
-                        //时间戳计算，与当前时间差
-                        var unixTimestamp = new Date(timestamp * 1000);
-                        var endtime = new Date();
-                        var date = endtime.getTime() - unixTimestamp.getTime();
-                        if (date > 600000) {
-                            return res.json({ code: 12004, message: 'auth_code error' });
+                var user_id = ut.userId;
+                SysUserModel.getUserByName(client_id)
+                    .then(function (result) {
+                        if (result == null) {
+                            return res.status(401).json({ code: 12001, message: "Website not find" });
                         }
                         else {
-                            var expires = moment().add('minutes', 60).valueOf();
-                            var token = jwt.encode({
-                                iss: user_id,
-                                exp: expires
-                            }, config.jwtTokenSecret);
-                            return res.json({ code: 0, message: 'Successfully', access_token: token });
+                            if (result.secret == client_secret) {
+                                if (result.url == redirect_uri) {
+                                    //签名解码
+                                    var decodeString;
+                                    try {
+                                        decodeString = base64.decode(auth_code);
+                                    } catch (e) {
+                                        return res.json({ code: 12004, message: 'auth_code error' });
+                                    }
+                                    var secret = decodeString.substring(0, 16);
+                                    var timestamp = parseInt(decodeString.substring(16, decodeString.length));
+                                    //时间戳计算，与当前时间差
+                                    var unixTimestamp = new Date(timestamp * 1000);
+                                    var endtime = new Date();
+                                    var date = endtime.getTime() - unixTimestamp.getTime();
+                                    if (date > 600000) {
+                                        return res.json({ code: 12004, message: 'auth_code error' });
+                                    }
+                                    else {
+                                        var expires = moment().add('minutes', 60).valueOf();
+                                        var token = jwt.encode({
+                                            iss: user_id,
+                                            exp: expires
+                                        }, config.jwtTokenSecret);
+                                        return res.json({ code: 0, message: 'Successfully', access_token: token });
+                                    }
+                                }
+                                else {
+                                    return res.status(401).json({ code: 12003, message: "redirect_uri error" });
+                                }
+                            }
+                            else {
+                                return res.status(401).json({ code: 12002, message: "secret error" });
+                            }
                         }
-                    }
-                    else {
-                        return res.status(401).json({ code: 12003, message: "redirect_uri error" });
-                    }
-                }
-                else {
-                    return res.status(401).json({ code: 12002, message: "secret error" });
-                }
+                    }).catch(next);
             }
-        }).catch(next);
+        })
+
+
 });
 
 // GET 验证令牌

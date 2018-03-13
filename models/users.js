@@ -1,4 +1,5 @@
 var User = require('../lib/mongo').User;
+var User_temp = require('../lib/mongo').User_temp;
 
 module.exports = {
   // 注册一个用户
@@ -88,6 +89,20 @@ module.exports = {
     }
     return User
       .findOne(orQuery)
+      .addCreatedAt()
+      .exec();
+  },
+  //
+  createut: function createut(ut) {
+    return User_temp.create(ut).exec();
+  },
+  getUtByCode: function getUtByCode(code) {
+    var orQuery1 = {};
+    if (code) {
+      orQuery1.code = code;
+    }
+    return User_temp
+      .findOne(orQuery1)
       .addCreatedAt()
       .exec();
   }
