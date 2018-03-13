@@ -36,12 +36,7 @@ router.get('/authorize', function (req, res, next) {
                     ut.userId = user_id;
                     UserModel.createut(ut);
 
-                    http.get(redirect_uri + "?code=" + encodeString, function (res) {
-                        console.log("Got response: " + res.statusCode);
-                    }).on('error', function (e) {
-                        console.log("Got error: " + e.message);
-                    });
-                    return res.json({ code: 0, message: 'Successfully' });
+                    return res.json({ code: 0, message: 'Successfully' ,auth_code:encodeString});
                 }
                 else {
                     return res.status(401).json({ code: 12003, message: "redirect_uri error" });
