@@ -22,15 +22,15 @@ module.exports = {
     return Book
       .count();
   },
-  getAllBookByLastTime: function getAllBookByLastTime(time,page, count) {
+  getAllBookByLastTime: function getAllBookByLastTime(time, page, count) {
     return Book
-      .find({"lastUpdateTime" : {$gte:time}}).skip((page - 1) * count).limit(count)
+      .find({ "lastUpdateTime": { $gte: time } }).skip((page - 1) * count).limit(count)
       .addCreatedAt()
       .exec();
   },
   getAllBookByLastTimeCount: function getAllBookByLastTimeCount(time) {
     return Book
-      .count({"lastUpdateTime" : {$gte:time}});
+      .count({ "lastUpdateTime": { $gte: time } });
   },
   //根据ID获取一本图书
   getBookById: function getBookById(id) {
@@ -53,6 +53,7 @@ module.exports = {
     var orQuery3 = {};
     var orQuery4 = {};
     var orQuery5 = {};
+    var orQuery6 = {};
     var qs = new RegExp(search);
     if (search) {
       orQuery1.bookId = qs;
@@ -60,9 +61,10 @@ module.exports = {
       orQuery3.branch = qs;
       orQuery4.editor = qs;
       orQuery5.author = qs;
+      orQuery6.ISBN = qs;
     }
     return Book
-      .find({ '$or': [orQuery1, orQuery2, orQuery3, orQuery4, orQuery5] }).skip((page - 1) * count).limit(count);
+      .find({ '$or': [orQuery1, orQuery2, orQuery3, orQuery4, orQuery5,orQuery6] }).skip((page - 1) * count).limit(count);
   },
   searchEbooksCount: function searchEbooksCount(search) {
     var query = {};
@@ -71,6 +73,7 @@ module.exports = {
     var orQuery3 = {};
     var orQuery4 = {};
     var orQuery5 = {};
+    var orQuery6 = {};
     var qs = new RegExp(search);
     if (search) {
       orQuery1.bookId = qs;
@@ -78,8 +81,9 @@ module.exports = {
       orQuery3.branch = qs;
       orQuery4.editor = qs;
       orQuery5.author = qs;
+      orQuery6.ISBN = qs;
     }
     return Book
-      .count({ '$or': [orQuery1, orQuery2, orQuery3, orQuery4, orQuery5] });
+      .count({ '$or': [orQuery1, orQuery2, orQuery3, orQuery4, orQuery5,orQuery6] });
   }
 };
