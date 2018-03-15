@@ -8,6 +8,18 @@ var moment = require('moment');
 var config = require('config-lite')(__dirname);
 var base64 = require('base64-utf8');
 
+
+router.get('/getphonecode', function (req, res, next) {
+    //生成一个手机验证码，调用发送手机api，存储到数据库，返回是否成功给页面
+    return res.json({ code: 0, message: '' });
+});
+
+router.get('/verifyphonecode', function (req, res, next) {
+    var code = req.query.code;
+    //跟数据库中存储作对比，返回是否正确
+    return res.json({ code: 0, message: '' });
+});
+
 // GET /signin 登录页
 router.get('/', function (req, res, next) {
     var token = req.query.ssotoken;
